@@ -1676,6 +1676,12 @@ int main(int argc, char** argv)
            scan_topic.c_str(), odom_topic.c_str(), waypoint_topic.c_str());
     fflush(stdout);
 
+    // NativeModule.start() in Python reads stderr for this marker and only
+    // returns once it sees it. Without this, upstream publishers can race
+    // ahead and emit messages before our LCM subscriptions are live.
+    fprintf(stderr, "[DIMOS_NATIVE_READY]\n");
+    fflush(stderr);
+
     // --- Main loop ---
     int loop_period_ms = (int)(1000.0 / std::max(planner.kUpdateRate, 0.1));
 
